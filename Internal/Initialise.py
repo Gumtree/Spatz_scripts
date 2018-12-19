@@ -20,9 +20,9 @@ import traceback
 sics.ready = False
 __script__.title = 'Initialised'
 __script__.version = ''
-__data_folder__ = 'W:/data/current'
+__data_folder__ = 'L:/data/cycle/current/sics'
 #__data_folder__ = 'Z:/testing/pelican'
-__export_folder__ = 'W:/data/current/reports'
+__export_folder__ = 'C:/Gumtree/reports'
 __buffer_log_file__ = __export_folder__
 Dataset.__dicpath__ = get_absolute_path('/Internal/path_table')
 System.setProperty('sics.data.path', __data_folder__)
@@ -67,7 +67,10 @@ __save_count_node__ = sics.getSicsController().findComponentController('/experim
 __file_name_node__ = sics.getSicsController().findComponentController('/experiment/file_name')
 __file_status_node__ = sics.getSicsController().findComponentController('/experiment/file_status')
 #saveCount = int(saveCountNode.getValue().getIntData())
-__cur_status__ = str(__scan_status_node__.getValue().getStringData())
+try:
+    __cur_status__ = str(__scan_status_node__.getValue().getStringData())
+except:
+    pass
 __file_name__ = str(__file_name_node__.getValue().getStringData())
 
 class __Display_Runnable__(Runnable):

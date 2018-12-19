@@ -39,7 +39,6 @@ def __run_script__(fns):
             # load dataset with each file name
             ds = df[fn]
             print ds.shape
-    print arg1_name.value
     
 def __dispose__():
     global Plot1
