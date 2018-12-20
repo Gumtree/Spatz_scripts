@@ -54,7 +54,6 @@ def toggle_peak(p):
     SELECTED_PEAK = p
     for i in range(1, NUM_PEAK + 1) :
         if i == p:
-            print 'enable', i
             exec('peak{}_select.value=True'.format(i))
             exec('peak{}_min.enabled=True'.format(i))
             exec('peak{}_max.enabled=True'.format(i))
@@ -63,7 +62,6 @@ def toggle_peak(p):
             exec('peak{}_FWHM.enabled=True'.format(i))
             exec('g{}.highlight=True'.format(i))
         else:
-            print 'disable', i
             exec('peak{}_select.value={}'.format(i, 'False'))
             exec('peak{}_min.enabled={}'.format(i, 'False'))
             exec('peak{}_max.enabled={}'.format(i, 'False'))
@@ -160,24 +158,28 @@ def __run_script__(fns):
             # load dataset with each file name
             ds = df[fns[0]]
             if ds.ndim == 4:
-                sl = ds[0, 0]
-            else:
+                d3 = ds[0]
+                sl = d3.intg(2)
+            elif ds.ndim == 3:
                 sl = ds[0]
+            else:
+                raise Exception('dataset dimension must be 3 or 4, got {}'.format(ds.ndim))
+            sl = sl.transpose()
             a1 = sl.axes[1]
-            if a1.size > 1 and a1[0] > a1[-1]:
-                ns = simpledata.zeros(sl.shape)
-                xl = sl.shape[1]
-                for i in xrange(xl):
-                    ns[:, i] = sl[:, xl - 1 - i]
-                ns.title = sl.title
-                xl = a1.size
-                na = simpledata.zeros([xl])
-                for i in xrange(xl):
-                    na[i] = a1[xl - 1 - i]
-                na.title = a1.title
-                na.units = a1.units
-                nv = ns.float_copy()
-                sl = Dataset(ns, var = nv, axes = [sl.axes[0], na])
+#            if a1.size > 1 and a1[0] > a1[-1]:
+#                ns = simpledata.zeros(sl.shape)
+#                xl = sl.shape[1]
+#                for i in xrange(xl):
+#                    ns[:, i] = sl[:, xl - 1 - i]
+#                ns.title = sl.title
+#                xl = a1.size
+#                na = simpledata.zeros([xl])
+#                for i in xrange(xl):
+#                    na[i] = a1[xl - 1 - i]
+#                na.title = a1.title
+#                na.units = a1.units
+#                nv = ns.float_copy()
+#                sl = Dataset(ns, var = nv, axes = [sl.axes[0], na])
             Plot1.set_dataset(sl)
             Plot1.set_mouse_listener(NavMouseListener())
             Plot1.title = ds.title
