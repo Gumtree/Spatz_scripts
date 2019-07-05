@@ -106,7 +106,7 @@ def fit_curve(i):
         log('Error: no curve to fit in Plot2.\n')
         return
     for d in ds:
-        if d.title == 'fitting':
+        if d.title == 'fitting_{}'.format(i):
             Plot2.remove_dataset(d)
     d0 = ds[0]
     fitting = Fitting(GAUSSIAN_FITTING)
@@ -122,7 +122,7 @@ def fit_curve(i):
             fitting.set_param('sigma', math.fabs(val / 2.35482))
         res = fitting.fit()
         res.var[:] = 0
-        res.title = 'fitting'
+        res.title = 'fitting_{}'.format(i)
         Plot2.add_dataset(res)
         Plot2.pv.getPlot().setCurveMarkerVisible(Plot2.__get_NXseries__(res), False)
         mean = fitting.params['mean']
