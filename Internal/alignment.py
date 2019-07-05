@@ -54,6 +54,7 @@ data_name = Par('string', 'total_counts', \
 normalise = Par('bool', True)
 axis_name = Par('string', '')
 axis_name.enabled = True
+lock_axis_name = Par('bool', False)
 auto_fit = Par('bool', False)
 fit_min = Par('float', 'NaN')
 fit_max = Par('float', 'NaN')
@@ -62,7 +63,8 @@ FWHM = Par('float', 'NaN')
 fact = Act('fit_curve()', 'Fit Again')
 #offset_done = Par('bool', False)
 #act3 = Act('offset_s2()', 'Set Device Zero Offset')
-G2.add(data_name, normalise, axis_name, auto_fit, fit_min, fit_max, peak_pos, FWHM, fact)
+G2.add(data_name, normalise, axis_name, lock_axis_name, auto_fit, fit_min, 
+       fit_max, peak_pos, FWHM, fact)
 
 G3 = Group('Plot 2')
 allow_duplication = Par('bool', False)
@@ -349,7 +351,8 @@ def __std_run_script__(fns):
 #                    return
             df.datasets.clear()
             ds = df[fn]
-            axis_name.value = ds.axes[0].name
+            if not lock_axis_name.value:
+                axis_name.value = ds.axes[0].name
             dname = str(data_name.value)
             if dname == 'total_counts':
 #                data = ds.sum(0)
@@ -361,9 +364,14 @@ def __std_run_script__(fns):
                     tname = 'bm1_time'
                 elif dname == 'bm2_counts':
                     tname = 'bm2_time'
-                else:
+                elif dname == 'total_counts':
                     tname = 'detector_time'
-                norm = ds[tname]
+                else:
+                    tname = None
+                if tname:
+                    norm = ds[tname]
+                else:
+                    norm = None
                 if norm != None and hasattr(norm, '__len__'):
                     avg = norm.sum() / len(norm)
                     niter = norm.item_iter()
