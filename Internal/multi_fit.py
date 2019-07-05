@@ -162,8 +162,10 @@ def __run_script__(fns):
                 sl = d3.intg(2)
             elif ds.ndim == 3:
                 sl = ds[0]
+            elif ds.ndim == 2:
+                sl = ds
             else:
-                raise Exception('dataset dimension must be 3 or 4, got {}'.format(ds.ndim))
+                raise Exception('dataset dimension must be 2, 3 or 4, got {}'.format(ds.ndim))
             sl = sl.transpose()
             a1 = sl.axes[1]
 #            if a1.size > 1 and a1[0] > a1[-1]:
