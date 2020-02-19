@@ -12,15 +12,23 @@ __script__.title = 'Device Alignment'
 __script__.version = ''
 #pact = Act('previous_step()', '<- Previous Step')
     
-G1 = Group('Scan on device')
+G1 = Group('Scan with defined start and stop positions')
 device_name = Par('string', 'dummy_motor', options = ['dummy_motor'], command = 'update_axis_name()')
+device_name.title = 'device name'
 scan_start = Par('float', 0)
+scan_start.title = 'scan start'
 scan_stop = Par('float', 0)
+scan_stop.title = 'scan stop'
 number_of_points = Par('int', 0)
+number_of_points.title = 'number of points'
 scan_mode = Par('string', 'time', options = ['time', 'count'])
 scan_mode.enabled = True
+scan_mode.title = 'scan mode'
 scan_preset = Par('int', 0)
-act1 = Act('scan_device()', 'Scan on Device')
+scan_preset.title = 'preset'
+save_type = Par('string', 'nosave', options = ['save', 'nosave'])
+save_type.title = 'save to HDF'
+act1 = Act('scan_device()', 'Run scan in defined range')
 slog('loading alignment')
 def scan_device():
     aname = device_name.value
@@ -34,7 +42,7 @@ def scan_device():
                     + ' ' + str(number_of_points.value) + ' ' + str(scan_mode.value) + ' ' + str(scan_preset.value))
     sicsext.runscan(device_name.value, scan_start.value, scan_stop.value, number_of_points.value, 
                     scan_mode.value, scan_preset.value, load_experiment_data, True, \
-                    'HISTOGRAM_T')
+                    'HISTOGRAM_T', save_type.value)
     time.sleep(2)
     peak_pos.value = float('NaN')
     FWHM.value = float('NaN')
@@ -46,7 +54,67 @@ device_name.options = devices
 def update_axis_name():
     axis_name.value = device_name.value
         
-G1.add(device_name, scan_start, scan_stop, number_of_points, scan_mode, scan_preset, act1)
+G1.add(device_name, scan_start, scan_stop, number_of_points, scan_mode, 
+       scan_preset, save_type, act1)
+
+G11 = Group('Scan in a region around the current position')
+g11_device_name = Par('string', 'dummy_motor', options = ['dummy_motor'], 
+                      command = 'update_current_axis()')
+g11_device_name.title = 'device name'
+g11_scan_range = Par('float', 0)
+g11_scan_range.title = 'range around current position'
+g11_number_of_steps = Par('int', 0)
+g11_number_of_steps.title = 'number of steps'
+g11_scan_mode = Par('string', 'time', options = ['time', 'count'])
+g11_scan_mode.enabled = True
+g11_scan_mode.title = 'scan mode'
+g11_scan_preset = Par('int', 0)
+g11_scan_preset.title = 'preset'
+g11_save_type = Par('string', 'nosave', options = ['save', 'nosave'])
+g11_save_type.title = 'save to HDF'
+act11 = Act('scan_range()', 'Scan around the current position')
+def scan_range():
+    aname = g11_device_name.value
+    try:
+        if DEBUGGING :
+            aname = 'dummy_motor'
+    except:
+        pass
+    axis_name.value = aname
+    np = g11_number_of_steps.value
+    range = g11_scan_range.value
+    current = sicsext.getStableValue(str(aname)).getFloatData()
+    if np <= 0:
+        raise Exception, 'invalid number of steps'
+    elif np == 1:
+        start = current
+        end = current
+    elif range <= 0:
+        raise Exception, 'invalid scan range'
+    else:
+        start = current - range / 2
+        stop = current + range / 2
+    mode = g11_scan_mode.value
+    preset = g11_scan_preset.value
+    save_type = g11_save_type.value
+    slog('runscan ' + str(aname) + ' ' + str(start) + ' ' + str(stop) \
+                    + ' ' + str(np) + ' ' + str(mode) + ' ' + str(preset))
+    sicsext.runscan(aname, start, stop, \
+                    np, mode, preset, \
+                    load_experiment_data, True, \
+                    'HISTOGRAM_T', save_type)
+    time.sleep(2)
+    peak_pos.value = float('NaN')
+    FWHM.value = float('NaN')
+    if auto_fit.value :
+        fit_curve()
+    
+g11_device_name.options = devices
+def update_current_axis():
+    axis_name.value = g11_device_name.value
+        
+G11.add(g11_device_name, g11_scan_range, g11_number_of_steps, g11_scan_mode, 
+        g11_scan_preset, g11_save_type, act11)
 
 G2 = Group('Fitting')
 data_name = Par('string', 'total_counts', \
