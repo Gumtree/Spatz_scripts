@@ -20,7 +20,7 @@ import traceback
 sics.ready = False
 __script__.title = 'Initialised'
 __script__.version = ''
-__data_folder__ = 'L:/data/cycle/current/sics'
+__data_folder__ = 'W:/data/cycle/current/sics'
 #__data_folder__ = 'Z:/testing/pelican'
 __export_folder__ = 'C:/Gumtree/reports'
 __buffer_log_file__ = __export_folder__
