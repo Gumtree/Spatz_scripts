@@ -42,7 +42,7 @@ def scan_device():
                     + ' ' + str(number_of_points.value) + ' ' + str(scan_mode.value) + ' ' + str(scan_preset.value))
     sicsext.runscan(device_name.value, scan_start.value, scan_stop.value, number_of_points.value, 
                     scan_mode.value, scan_preset.value, load_experiment_data, True, \
-                    'HISTOGRAM_T', save_type.value)
+                    'HISTOGRAM_XYT', save_type.value)
     time.sleep(2)
     peak_pos.value = float('NaN')
     FWHM.value = float('NaN')
