@@ -102,7 +102,7 @@ def scan_range():
     sicsext.runscan(aname, start, stop, \
                     np, mode, preset, \
                     load_experiment_data, True, \
-                    'HISTOGRAM_T', save_type)
+                    'HISTOGRAM_XYT', save_type)
     time.sleep(2)
     peak_pos.value = float('NaN')
     FWHM.value = float('NaN')
