@@ -1,0 +1,5 @@
+# define angle table
+#angle,	 omega,	 ss1vg,	 ss2vg,	 ss3vg,	 pos
+1, 	2.0, 	5.0, 	0.0, 	0.0, 	6
+2, 	2.0, 	5.0, 	0.0, 	0.0, 	6
+

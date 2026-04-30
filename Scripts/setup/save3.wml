@@ -1,0 +1,132 @@
+<workflow>
+  <task classname="au.gov.ansto.bragg.spatz.ui.tasks.AngleTableTask">
+    <parameters/>
+    <dataModel class="org.gumtree.gumnix.sics.batch.ui.model.SicsCommandBlock">
+      <commands>
+        <au.gov.ansto.bragg.spatz.ui.tasks.AngleCommand>
+          <parameters>
+            <au.gov.ansto.bragg.spatz.ui.tasks.AngleParameter>
+              <isDisposed>false</isDisposed>
+              <command reference="../../.."/>
+              <angle>1</angle>
+              <omega>2.0</omega>
+              <ss1vg>1.3</ss1vg>
+              <ss2vg>5.0</ss2vg>
+              <ss3vg>4.0</ss3vg>
+              <pos>5</pos>
+            </au.gov.ansto.bragg.spatz.ui.tasks.AngleParameter>
+            <au.gov.ansto.bragg.spatz.ui.tasks.AngleParameter>
+              <isDisposed>false</isDisposed>
+              <command reference="../../.."/>
+              <angle>2</angle>
+              <omega>1.0</omega>
+              <ss1vg>2.4</ss1vg>
+              <ss2vg>2.0</ss2vg>
+              <ss3vg>6.0</ss3vg>
+              <pos>6</pos>
+            </au.gov.ansto.bragg.spatz.ui.tasks.AngleParameter>
+            <au.gov.ansto.bragg.spatz.ui.tasks.AngleParameter>
+              <isDisposed>false</isDisposed>
+              <command reference="../../.."/>
+              <angle>3</angle>
+              <omega>3.0</omega>
+              <ss1vg>4.5</ss1vg>
+              <ss2vg>5.66</ss2vg>
+              <ss3vg>6.0</ss3vg>
+              <pos>7</pos>
+            </au.gov.ansto.bragg.spatz.ui.tasks.AngleParameter>
+          </parameters>
+          <preset>0.0</preset>
+          <commandName>Angle</commandName>
+        </au.gov.ansto.bragg.spatz.ui.tasks.AngleCommand>
+      </commands>
+    </dataModel>
+  </task>
+  <task classname="au.gov.ansto.bragg.spatz.ui.tasks.PositionTableTask">
+    <parameters/>
+    <dataModel class="org.gumtree.gumnix.sics.batch.ui.model.SicsCommandBlock">
+      <commands>
+        <au.gov.ansto.bragg.spatz.ui.tasks.PositionCommand>
+          <parameters>
+            <au.gov.ansto.bragg.spatz.ui.tasks.PositionParameter>
+              <isDisposed>false</isDisposed>
+              <command reference="../../.."/>
+              <position>1</position>
+              <sx>2.0</sx>
+              <sz>0.0</sz>
+              <sth>1.0</sth>
+              <sphi>3.5</sphi>
+              <samplename>6</samplename>
+            </au.gov.ansto.bragg.spatz.ui.tasks.PositionParameter>
+            <au.gov.ansto.bragg.spatz.ui.tasks.PositionParameter>
+              <isDisposed>false</isDisposed>
+              <command reference="../../.."/>
+              <position>2</position>
+              <sx>1.0</sx>
+              <sz>0.0</sz>
+              <sth>2.0</sth>
+              <sphi>2.3</sphi>
+              <samplename>5</samplename>
+            </au.gov.ansto.bragg.spatz.ui.tasks.PositionParameter>
+            <au.gov.ansto.bragg.spatz.ui.tasks.PositionParameter>
+              <isDisposed>false</isDisposed>
+              <command reference="../../.."/>
+              <position>3</position>
+              <sx>1.0</sx>
+              <sz>0.0</sz>
+              <sth>3.0</sth>
+              <sphi>1.2</sphi>
+              <samplename>4</samplename>
+            </au.gov.ansto.bragg.spatz.ui.tasks.PositionParameter>
+            <au.gov.ansto.bragg.spatz.ui.tasks.PositionParameter>
+              <isDisposed>false</isDisposed>
+              <command reference="../../.."/>
+              <position>4</position>
+              <sx>1.0</sx>
+              <sz>0.0</sz>
+              <sth>4.0</sth>
+              <sphi>7.5</sphi>
+              <samplename>3</samplename>
+            </au.gov.ansto.bragg.spatz.ui.tasks.PositionParameter>
+            <au.gov.ansto.bragg.spatz.ui.tasks.PositionParameter>
+              <isDisposed>false</isDisposed>
+              <command reference="../../.."/>
+              <position>5</position>
+              <sx>1.0</sx>
+              <sz>0.0</sz>
+              <sth>5.0</sth>
+              <sphi>8.4</sphi>
+              <samplename>2</samplename>
+            </au.gov.ansto.bragg.spatz.ui.tasks.PositionParameter>
+          </parameters>
+          <preset>0.0</preset>
+          <commandName>Position</commandName>
+        </au.gov.ansto.bragg.spatz.ui.tasks.PositionCommand>
+      </commands>
+    </dataModel>
+  </task>
+  <task classname="au.gov.ansto.bragg.nbi.ui.tasks.SicsScriptTask">
+    <parameters/>
+    <dataModel class="org.gumtree.gumnix.sics.batch.ui.model.SicsCommandBlock">
+      <commands>
+        <org.gumtree.gumnix.sics.batch.ui.commands.ScriptCommand>
+          <text>angler 1&#xd;
+positioner 1&#xd;
+count 60</text>
+        </org.gumtree.gumnix.sics.batch.ui.commands.ScriptCommand>
+      </commands>
+    </dataModel>
+  </task>
+  <context>
+    <org.gumtree.gumnix.sics.batch.ui.model.SicsBatchScript>
+      <org.gumtree.gumnix.sics.batch.ui.model.SicsBatchScript>
+        <blocks>
+          <org.gumtree.gumnix.sics.batch.ui.model.SicsCommandBlock reference="../../../../../task/dataModel"/>
+          <org.gumtree.gumnix.sics.batch.ui.model.SicsCommandBlock reference="../../../../../task[2]/dataModel"/>
+          <org.gumtree.gumnix.sics.batch.ui.model.SicsCommandBlock reference="../../../../../task[3]/dataModel"/>
+        </blocks>
+      </org.gumtree.gumnix.sics.batch.ui.model.SicsBatchScript>
+    </org.gumtree.gumnix.sics.batch.ui.model.SicsBatchScript>
+  </context>
+  <parameters/>
+</workflow>
