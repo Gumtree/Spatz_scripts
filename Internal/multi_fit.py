@@ -3,7 +3,7 @@ from gumpy.vis.event import MouseListener
 import traceback, sys
 # Script control setup area
 # script info
-__script__.title = 'Muiti-Peak fitting'
+__script__.title = 'Multi-Peak fitting'
 __script__.version = '0.1'
 
 DS = None
@@ -38,7 +38,7 @@ peak$I_max.title = "max X"
 peak$I_max.focus = "set_focus('peak$I_max')"
 peak$I_act = Act("fit_curve($I)", "Fit peak $I")
 peak$I_act.enabled = False
-peak$I_mean = Par("flaot", "NaN")
+peak$I_mean = Par("float", "NaN")
 peak$I_mean.enabled = False
 peak$I_mean.title = "peak $I value"
 peak$I_FWHM = Par("float", "NaN")
