@@ -218,56 +218,13 @@ def load_experiment_data():
     except:
         log('error in adding dataset: ' + fullname)
     ds = df[fullname]
-    dname = str(data_name.value)
-    data = SimpleData(ds[dname])
-#    data = ds[str(data_name.value)]
-    axis = SimpleData(ds[str(axis_name.value)])
-    if data.size > axis.size:
-        data = data[:axis.size]
-    if normalise.value :
-        if dname == 'bm1_counts':
-            tname = 'bm1_time'
-        elif dname == 'bm2_counts':
-            tname = 'bm2_time'
-        else:
-            tname = 'detector_time'
-        norm = ds[tname]
-        if norm != None and hasattr(norm, '__len__'):
-            avg = norm.sum() / len(norm)
-            niter = norm.item_iter()
-            if niter.next() <= 0:
-                niter.set_curr(1)
-            data = data / norm * avg
-
-    ds2 = Dataset(data, axes=[axis])
-    ds2.title = ds.id
-    ds2.location = fullname
-    fit_min.value = axis.min()
-    fit_max.value = axis.max()
-    Plot1.set_dataset(ds2)
-    Plot1.x_label = axis_name.value
-    Plot1.y_label = str(data_name.value)
-    Plot1.title = str(data_name.value) + ' vs ' + axis_name.value
-    Plot1.pv.getPlot().setMarkerEnabled(True)
-
-def import_to_plot2():
-    global Plot2
-    dss = __DATASOURCE__.getSelectedDatasets()
-    for dinfo in dss:
-        loc = dinfo.getLocation()
-        ds = df[str(loc)]
-        if not allow_duplication.value:
-            did = str(ds.id)
-            if to_remove.options.__contains__(did):
-                for item in reversed(Plot2.ds) :
-                    if item.title == did :
-                        Plot2.remove_dataset(item)
-                        rlist = copy(to_remove.options)
-                        rlist.remove(did)
-                        to_remove.options = rlist
-                        break
+    try:
         dname = str(data_name.value)
         data = SimpleData(ds[dname])
+    #    data = ds[str(data_name.value)]
+        axis = SimpleData(ds[str(axis_name.value)])
+        if data.size > axis.size:
+            data = data[:axis.size]
         if normalise.value :
             if dname == 'bm1_counts':
                 tname = 'bm1_time'
@@ -282,22 +239,73 @@ def import_to_plot2():
                 if niter.next() <= 0:
                     niter.set_curr(1)
                 data = data / norm * avg
-        if axis_name.value:
-            axis = SimpleData(ds[str(axis_name.value)])
-        else :
-            axis_name.value = ds.axes[0].name
-            axis = SimpleData(ds[str(axis_name.value)])
-        if data.size > axis.size:
-            data = data[:axis.size]
+    
         ds2 = Dataset(data, axes=[axis])
         ds2.title = ds.id
-        Plot2.add_dataset(ds2)
-        Plot2.x_label = axis_name.value
-        Plot2.y_label = dname
-        Plot2.title = 'Overlay'
-        rlist = copy(to_remove.options)
-        rlist.append(str(ds2.title))
-        to_remove.options = rlist
+        ds2.location = fullname
+        fit_min.value = axis.min()
+        fit_max.value = axis.max()
+        Plot1.set_dataset(ds2)
+        Plot1.x_label = axis_name.value
+        Plot1.y_label = str(data_name.value)
+        Plot1.title = str(data_name.value) + ' vs ' + axis_name.value
+        Plot1.pv.getPlot().setMarkerEnabled(True)
+    finally:
+        print('close scan dataset')
+        ds.close()
+
+def import_to_plot2():
+    global Plot2
+    dss = __DATASOURCE__.getSelectedDatasets()
+    for dinfo in dss:
+        loc = dinfo.getLocation()
+        ds = df[str(loc)]
+        try:
+            if not allow_duplication.value:
+                did = str(ds.id)
+                if to_remove.options.__contains__(did):
+                    for item in reversed(Plot2.ds) :
+                        if item.title == did :
+                            Plot2.remove_dataset(item)
+                            rlist = copy(to_remove.options)
+                            rlist.remove(did)
+                            to_remove.options = rlist
+                            break
+            dname = str(data_name.value)
+            data = SimpleData(ds[dname])
+            if normalise.value :
+                if dname == 'bm1_counts':
+                    tname = 'bm1_time'
+                elif dname == 'bm2_counts':
+                    tname = 'bm2_time'
+                else:
+                    tname = 'detector_time'
+                norm = ds[tname]
+                if norm != None and hasattr(norm, '__len__'):
+                    avg = norm.sum() / len(norm)
+                    niter = norm.item_iter()
+                    if niter.next() <= 0:
+                        niter.set_curr(1)
+                    data = data / norm * avg
+            if axis_name.value:
+                axis = SimpleData(ds[str(axis_name.value)])
+            else :
+                axis_name.value = ds.axes[0].name
+                axis = SimpleData(ds[str(axis_name.value)])
+            if data.size > axis.size:
+                data = data[:axis.size]
+            ds2 = Dataset(data, axes=[axis])
+            ds2.title = ds.id
+            Plot2.add_dataset(ds2)
+            Plot2.x_label = axis_name.value
+            Plot2.y_label = dname
+            Plot2.title = 'Overlay'
+            rlist = copy(to_remove.options)
+            rlist.append(str(ds2.title))
+            to_remove.options = rlist
+        finally:
+            print('close for import dataset')
+            ds.close()
 
 def remove_curve():
     global Plot2
@@ -419,51 +427,55 @@ def __std_run_script__(fns):
 #                    return
             df.datasets.clear()
             ds = df[fn]
-            if not lock_axis_name.value:
-                axis_name.value = ds.axes[0].name
-            dname = str(data_name.value)
-            if dname == 'total_counts':
-#                data = ds.sum(0)
-                data = ds[dname]
-            else:
-                data = ds[dname]
-            if normalise.value :
-                if dname == 'bm1_counts':
-                    tname = 'bm1_time'
-                elif dname == 'bm2_counts':
-                    tname = 'bm2_time'
-                elif dname == 'total_counts':
-                    tname = 'detector_time'
+            try:
+                if not lock_axis_name.value:
+                    axis_name.value = ds.axes[0].name
+                dname = str(data_name.value)
+                if dname == 'total_counts':
+    #                data = ds.sum(0)
+                    data = ds[dname]
                 else:
-                    tname = None
-                if tname:
-                    norm = ds[tname]
-                else:
-                    norm = None
-                if norm != None and hasattr(norm, '__len__'):
-                    avg = norm.sum() / len(norm)
-                    niter = norm.item_iter()
-                    if niter.next() <= 0:
-                        niter.set_curr(1)
-                    data = data / norm * avg
-        
-            axis = ds.get_metadata(str(axis_name.value))
-            if not hasattr(axis, '__len__'):
-                axis = SimpleData([axis], title = (axis_name.value))
-            ds2 = Dataset(data, axes=[axis])
-            ds2.title = ds.id
-            ds2.location = fn
-            fit_min.value = axis.min()
-            fit_max.value = axis.max()
-            Plot1.set_dataset(ds2)
-            Plot1.x_label = axis_name.value
-            Plot1.y_label = dname
-            Plot1.title = dname + ' vs ' + axis_name.value
-            Plot1.pv.getPlot().setMarkerEnabled(True)
-            peak_pos.value = float('NaN')
-            FWHM.value = float('NaN')
-            if auto_fit.value :
-                fit_curve()
+                    data = ds[dname]
+                if normalise.value :
+                    if dname == 'bm1_counts':
+                        tname = 'bm1_time'
+                    elif dname == 'bm2_counts':
+                        tname = 'bm2_time'
+                    elif dname == 'total_counts':
+                        tname = 'detector_time'
+                    else:
+                        tname = None
+                    if tname:
+                        norm = ds[tname]
+                    else:
+                        norm = None
+                    if norm != None and hasattr(norm, '__len__'):
+                        avg = norm.sum() / len(norm)
+                        niter = norm.item_iter()
+                        if niter.next() <= 0:
+                            niter.set_curr(1)
+                        data = data / norm * avg
+            
+                axis = ds.get_metadata(str(axis_name.value))
+                if not hasattr(axis, '__len__'):
+                    axis = SimpleData([axis], title = (axis_name.value))
+                ds2 = Dataset(data, axes=[axis])
+                ds2.title = ds.id
+                ds2.location = fn
+                fit_min.value = axis.min()
+                fit_max.value = axis.max()
+                Plot1.set_dataset(ds2)
+                Plot1.x_label = axis_name.value
+                Plot1.y_label = dname
+                Plot1.title = dname + ' vs ' + axis_name.value
+                Plot1.pv.getPlot().setMarkerEnabled(True)
+                peak_pos.value = float('NaN')
+                FWHM.value = float('NaN')
+                if auto_fit.value :
+                    fit_curve()
+            finally:
+                print('close fitting dataset')
+                ds.close()
             
 def auto_run():
     pass
