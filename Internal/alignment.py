@@ -253,6 +253,7 @@ def load_experiment_data():
     finally:
         print('close scan dataset')
         ds.close()
+        df.datasets.clear()
 
 def import_to_plot2():
     global Plot2
@@ -306,6 +307,7 @@ def import_to_plot2():
         finally:
             print('close for import dataset')
             ds.close()
+            df.datasets.clear()
 
 def remove_curve():
     global Plot2
@@ -476,6 +478,7 @@ def __std_run_script__(fns):
             finally:
                 print('close fitting dataset')
                 ds.close()
+                df.datasets.clear()
             
 def auto_run():
     pass
